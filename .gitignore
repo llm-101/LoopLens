@@ -1,0 +1,32 @@
+# Build outputs
+target/
+desktop/dist/
+desktop/src-tauri/target/
+
+# Dependencies and caches
+desktop/node_modules/
+.vite/
+.cache/
+
+# Local capture data and generated CA material
+captures/
+ca/
+*.jsonl
+*.pem
+*.key
+
+# Logs
+*.log
+desktop-proxy.log
+
+# Environment and local machine files
+.env
+.env.*
+.DS_Store
+
+# OS/editor
+.idea/
+.vscode/
+*.swp
+*.swo
+

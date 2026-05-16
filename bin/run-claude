@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PORT="${CCC_PROXY_PORT:-8899}"
+CA_CERT="${CCC_CA_CERT:-$ROOT/ca/cc-capture-ca.pem}"
+PROXY_URL="http://127.0.0.1:${PORT}"
+
+export HTTP_PROXY="$PROXY_URL"
+export HTTPS_PROXY="$PROXY_URL"
+export http_proxy="$PROXY_URL"
+export https_proxy="$PROXY_URL"
+export NODE_EXTRA_CA_CERTS="$CA_CERT"
+export SSL_CERT_FILE="$CA_CERT"
+export REQUESTS_CA_BUNDLE="$CA_CERT"
+
+exec claude "$@"
