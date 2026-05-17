@@ -16,9 +16,9 @@ It is not a generic packet viewer. The product is focused on Claude Code and Cod
 
 Download the latest packaged app from [GitHub Releases](https://github.com/llm-101/LoopLens/releases/latest):
 
-- **macOS Apple Silicon**: download `LoopLens_0.1.0_arm64.dmg`
-- **macOS Intel**: download `LoopLens_0.1.0_x64.dmg`
-- **Windows x64**: download `LoopLens_0.1.0_windows_x64.exe`
+- **macOS Apple Silicon**: download `LoopLens_<version>_arm64.dmg`
+- **macOS Intel**: download `LoopLens_<version>_x64.dmg`
+- **Windows x64**: download `LoopLens_<version>_windows_x64.exe`
 
 The GitHub-generated **Source code (zip)** and **Source code (tar.gz)** files are not app installers.
 
@@ -215,8 +215,8 @@ npm run build
 GitHub Actions builds release packages when you push a version tag:
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.1.1
+git push origin v0.1.1
 ```
 
 The release workflow builds macOS arm64/x64 `.dmg` bundles and a Windows x64 `.exe` installer from `desktop/`, uploads the assets, and creates a draft GitHub Release named from the app version in `desktop/src-tauri/tauri.conf.json`.
