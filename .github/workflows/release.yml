@@ -42,7 +42,7 @@ jobs:
         run: npm ci
 
       - name: Build and publish Tauri bundle
-        uses: tauri-apps/tauri-action@v1
+        uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -55,5 +55,5 @@ jobs:
             This build is unsigned and not notarized yet, so macOS may require manual approval on first launch.
           releaseDraft: true
           prerelease: false
-          releaseAssetNamePattern: "LoopLens_[version]_${{ matrix.arch }}[ext]"
+          assetNamePattern: "LoopLens_[version]_${{ matrix.arch }}[ext]"
           args: --target ${{ matrix.target }}
