@@ -24,6 +24,24 @@ The GitHub-generated **Source code (zip)** and **Source code (tar.gz)** files ar
 
 Current macOS builds use ad-hoc signing and are not notarized yet. macOS or Windows may show a security warning on first launch; approve the app only if you downloaded it from the LoopLens release page.
 
+If macOS says **"Apple cannot verify LoopLens is free of malware"**:
+
+1. On your Mac, choose **Apple menu → System Settings**, then click **Privacy & Security** in the sidebar. You may need to scroll down.
+2. Go to the **Security** section, then click **Open**.
+3. Click **Open Anyway**.
+4. The **Open Anyway** button is available for about one hour after you try to open the app.
+5. Enter your login password, then click **OK**.
+
+中文提示：
+
+1. 在 Mac 上，选取 **苹果菜单 → 系统设置**，然后点按边栏中的 **隐私与安全性**。你可能需要向下滚动。
+2. 前往 **安全性**，然后点按 **打开**。
+3. 点按 **仍要打开**。
+4. 此按钮在你尝试打开该 App 后一小时内可用。
+5. 输入你的登录密码，然后点按 **好**。
+
+You can also Control-click `LoopLens.app` in Finder, choose **Open**, then confirm.
+
 If macOS says **"LoopLens is damaged and can't be opened"**, copy the app to Applications and remove the quarantine flag:
 
 ```bash

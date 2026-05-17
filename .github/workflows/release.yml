@@ -54,6 +54,8 @@ jobs:
 
             macOS builds use ad-hoc signing and are not notarized yet, so your OS may require manual approval on first launch.
 
+            If macOS says "Apple cannot verify LoopLens is free of malware", open System Settings → Privacy & Security and click Open Anyway, or Control-click LoopLens.app in Finder and choose Open.
+
             If macOS says "LoopLens is damaged and can't be opened", copy LoopLens.app to Applications and run:
 
             xattr -dr com.apple.quarantine /Applications/LoopLens.app
@@ -115,6 +117,8 @@ jobs:
             Download the macOS DMG or Windows installer below.
 
             macOS builds use ad-hoc signing and are not notarized yet, so your OS may require manual approval on first launch.
+
+            If macOS says "Apple cannot verify LoopLens is free of malware", open System Settings → Privacy & Security and click Open Anyway, or Control-click LoopLens.app in Finder and choose Open.
 
             If macOS says "LoopLens is damaged and can't be opened", copy LoopLens.app to Applications and run:
 
