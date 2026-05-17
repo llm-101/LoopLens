@@ -169,6 +169,21 @@ cargo check --manifest-path src-tauri/Cargo.toml
 npm run build
 ```
 
+## Automated Releases
+
+GitHub Actions builds release packages when you push a version tag:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The release workflow builds macOS arm64 and x64 bundles from `desktop/`, uploads `.dmg` and `.app` assets, and creates a draft GitHub Release named from the app version in `desktop/src-tauri/tauri.conf.json`.
+
+You can also run it manually from **Actions → Release → Run workflow**.
+
+Current release builds are unsigned and not notarized. macOS may require manual approval on first launch.
+
 ## Security And Privacy
 
 LoopLens captures local traffic that you route through it. Even with redaction, JSONL captures can contain sensitive material.

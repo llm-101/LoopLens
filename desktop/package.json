@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tauri dev",
+    "tauri": "tauri",
     "build": "tauri build",
     "dev:vite": "vite --host 127.0.0.1 --port 1420",
     "typecheck": "tsc --noEmit",
