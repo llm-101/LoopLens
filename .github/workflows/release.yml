@@ -50,9 +50,13 @@ jobs:
           tagName: v__VERSION__
           releaseName: LoopLens v__VERSION__
           releaseBody: |
-            Download the macOS bundle below.
+            Download the macOS DMG or Windows installer below.
 
-            This build is unsigned and not notarized yet, so macOS may require manual approval on first launch.
+            These builds are unsigned and not notarized yet, so your OS may require manual approval on first launch.
+
+            If macOS says "LoopLens is damaged and can't be opened", copy LoopLens.app to Applications and run:
+
+            xattr -dr com.apple.quarantine /Applications/LoopLens.app
           releaseDraft: true
           prerelease: false
           assetNamePattern: "LoopLens_[version]_${{ matrix.arch }}[ext]"
@@ -111,6 +115,10 @@ jobs:
             Download the macOS DMG or Windows installer below.
 
             These builds are unsigned and not notarized yet, so your OS may require manual approval on first launch.
+
+            If macOS says "LoopLens is damaged and can't be opened", copy LoopLens.app to Applications and run:
+
+            xattr -dr com.apple.quarantine /Applications/LoopLens.app
           draft: true
           prerelease: false
           fail_on_unmatched_files: true

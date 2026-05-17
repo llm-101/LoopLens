@@ -24,6 +24,15 @@ The GitHub-generated **Source code (zip)** and **Source code (tar.gz)** files ar
 
 Current builds are unsigned and not notarized yet. macOS or Windows may show a security warning on first launch; approve the app only if you downloaded it from the LoopLens release page.
 
+If macOS says **"LoopLens is damaged and can't be opened"**, copy the app to Applications and remove the quarantine flag:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/LoopLens.app
+open /Applications/LoopLens.app
+```
+
+This workaround is only needed for the current unsigned preview builds. Future signed and notarized releases should open normally.
+
 ## Highlights
 
 - One-click **Open Claude Code** and **Open Codex** launchers, each creating a fresh source-specific run file.
