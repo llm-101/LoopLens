@@ -7,7 +7,7 @@ Thanks for helping improve LoopLens.
 Build the native proxy:
 
 ```bash
-cargo build --release
+cargo build -p looplens-proxy --release
 ```
 
 Run the desktop app:
@@ -34,4 +34,3 @@ npm run build
 - Prefer Radix primitives for accessible interactions.
 - Prefer TanStack Table for dense data views.
 - Keep capture parsing conservative; unknown data should be shown as unknown/unmatched rather than guessed.
-

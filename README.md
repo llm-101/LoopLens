@@ -25,13 +25,34 @@ Claude Code / Codex CLI
         |
         | HTTPS proxy
         v
-cc-capture-native  ->  captures/*.jsonl
+looplens-proxy  ->  captures/*.jsonl
         |
         v
 LoopLens Desktop  ->  AI Loop / Network / Timeline / Tokens / Raw
 ```
 
 The native proxy writes JSONL capture files. The desktop app reads those captures, reads Claude session sidecars when available, and builds a unified agent-loop model in the UI.
+
+## Repository Layout
+
+```text
+.
+├── bin/                    # Local helper scripts and CLI launch wrappers
+├── crates/looplens-proxy/  # Rust capture proxy and local API gateway
+├── desktop/                # Tauri + React desktop application
+├── docs/                   # Screenshots and project documentation
+└── .github/workflows/      # CI checks
+```
+
+Runtime state is intentionally kept out of git:
+
+- `ca/` generated local CA material
+- `captures/` JSONL traffic captures
+- `hooks/` locally recorded structured hook events
+- `release/` packaged artifacts
+- `.claude/` and `.codex/` project-local hook config used during development
+
+See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for a contributor-focused map of the repository.
 
 ## Requirements
 
@@ -47,7 +68,7 @@ Build the native proxy:
 ```bash
 cd looplens
 ./bin/gen-ca.sh
-cargo build --release
+cargo build -p looplens-proxy --release
 ```
 
 Trust the local CA on macOS:
@@ -80,7 +101,7 @@ You can dismiss the checklist anytime. To bring it back during development, clea
 ## Run The Proxy Directly
 
 ```bash
-./target/release/cc-capture-native run
+./target/release/looplens-proxy run
 ```
 
 Capture files are written to `captures/capture-*.jsonl`.
@@ -90,8 +111,8 @@ Useful environment variables:
 ```bash
 CCC_LISTEN=127.0.0.1:8899
 CCC_OUTPUT_DIR=captures
-CCC_CA_CERT=ca/cc-capture-ca.pem
-CCC_CA_KEY=ca/cc-capture-ca.key
+CCC_CA_CERT=ca/looplens-ca.pem
+CCC_CA_KEY=ca/looplens-ca.key
 CCC_BODY_LIMIT=0
 CCC_CAPTURE_ALL=true
 ```
@@ -115,13 +136,13 @@ The desktop app uses these wrappers when opening native tools.
 ## Inspect Captures From CLI
 
 ```bash
-./target/release/cc-capture-native summary captures/capture-YYYYMMDD-HHMMSS.jsonl
+./target/release/looplens-proxy summary captures/capture-YYYYMMDD-HHMMSS.jsonl
 ```
 
 A simple HTML viewer is also available:
 
 ```bash
-./target/release/cc-capture-native serve --listen 127.0.0.1:8877 --captures-dir captures
+./target/release/looplens-proxy serve --listen 127.0.0.1:8877 --captures-dir captures
 ```
 
 Then open `http://127.0.0.1:8877`.
@@ -139,7 +160,7 @@ npm run dev
 Checks used by CI:
 
 ```bash
-cargo build --release
+cargo build -p looplens-proxy --release
 cd desktop
 npm run build:vite
 cargo check --manifest-path src-tauri/Cargo.toml
@@ -154,6 +175,9 @@ Never commit or publish:
 
 - `ca/`
 - `captures/`
+- `hooks/`
+- `.claude/`
+- `.codex/`
 - `*.jsonl`
 - `*.pem`
 - `*.key`

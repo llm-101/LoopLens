@@ -8,6 +8,9 @@ Do not publish or share these generated files:
 
 - `ca/`
 - `captures/`
+- `hooks/`
+- `.claude/`
+- `.codex/`
 - `*.jsonl`
 - `*.pem`
 - `*.key`
@@ -27,4 +30,3 @@ LoopLens can generate a local CA so native CLI tools can send HTTPS traffic thro
 ## Reporting Security Issues
 
 Please do not open public issues for sensitive vulnerabilities. Use a private GitHub security advisory when the repository is published, or contact the maintainer privately.
-

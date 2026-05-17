@@ -1,3 +1,5 @@
+type AnyRecord = Record<string, any>;
+
 export function formatBytes(value) {
   const bytes = Number(value || 0);
   if (bytes < 1024) return `${bytes} B`;
@@ -42,7 +44,79 @@ export function promptText(request) {
 }
 
 export function flowSearchText(flow) {
-  return JSON.stringify(flow).toLowerCase();
+  return [
+    flow.id,
+    flow.method,
+    flow.url,
+    flow.host,
+    flow.path,
+    flow.provider,
+    flow.status,
+    flow.reason,
+    flow.semantic?.category,
+    flow.semantic?.client,
+    flow.semantic?.model,
+    flow.semantic?.mcp_server,
+    flow.semantic?.rpc_method,
+    ...(flow.semantic?.tool_names || []),
+    ...(flow.semantic?.skill_names || []),
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+const STRUCTURED_SEARCH_RE = /^(model|status|category|host|provider|method|mcp|tool|tokens):\s*(.+)$/i;
+const TOKEN_COMPARE_RE = /^([><=!]+)?\s*(\d+)$/;
+
+export function structuredFlowSearch(flow, query: string): boolean {
+  const trimmed = query.trim();
+  if (!trimmed) return true;
+
+  const match = STRUCTURED_SEARCH_RE.exec(trimmed);
+  if (!match) {
+    return flowSearchText(flow).includes(trimmed.toLowerCase());
+  }
+
+  const field = match[1].toLowerCase();
+  const value = match[2].trim().toLowerCase();
+  const semantic = flow.semantic || {};
+
+  switch (field) {
+    case "model":
+      return String(semantic.model || "").toLowerCase().includes(value);
+    case "status": {
+      if (value === "error" || value === "errors") return Number(flow.status) >= 400;
+      if (value === "ok" || value === "success") return Number(flow.status) >= 200 && Number(flow.status) < 300;
+      if (value === "pending") return !flow.status;
+      return String(flow.status || "").includes(value);
+    }
+    case "category":
+      return String(semantic.category || "").toLowerCase().includes(value);
+    case "host":
+      return String(flow.host || "").toLowerCase().includes(value);
+    case "provider":
+      return String(flow.provider || "").toLowerCase().includes(value);
+    case "method":
+      return String(flow.method || "").toLowerCase() === value;
+    case "mcp":
+      return String(semantic.mcp_server || "").toLowerCase().includes(value);
+    case "tool":
+      return (semantic.tool_names || []).some((name) => String(name).toLowerCase().includes(value));
+    case "tokens": {
+      const tokenMatch = TOKEN_COMPARE_RE.exec(value);
+      if (!tokenMatch) return false;
+      const op = tokenMatch[1] || ">";
+      const threshold = Number(tokenMatch[2]);
+      const total = usageTotal(semantic.token_usage);
+      if (op === ">") return total > threshold;
+      if (op === ">=") return total >= threshold;
+      if (op === "<") return total < threshold;
+      if (op === "<=") return total <= threshold;
+      if (op === "=" || op === "==") return total === threshold;
+      if (op === "!=") return total !== threshold;
+      return total > threshold;
+    }
+    default:
+      return flowSearchText(flow).includes(trimmed.toLowerCase());
+  }
 }
 
 export function clientKey(flow) {
@@ -132,7 +206,7 @@ export function buildLoopModel(flows) {
   };
 }
 
-export function buildUnifiedTimeline(flows, claudeSessionDetail, options = {}) {
+export function buildUnifiedTimeline(flows, claudeSessionDetail, options: AnyRecord = {}) {
   const includeClaudeSession = options.sourceFilter !== "codex";
   const events = [];
 
@@ -322,10 +396,25 @@ function flowLane(category) {
   return "Network";
 }
 
+function isModelApiPath(path: string | undefined): boolean {
+  if (!path) return false;
+  const p = path.split("?")[0];
+  return [
+    "/v1/messages",
+    "/v1/chat/completions",
+    "/v1/responses",
+    "/api/anthropic/v1/messages",
+  ].some((endpoint) => p.endsWith(endpoint));
+}
+
 function flowTitle(flow) {
   const category = flow.semantic?.category || "HTTP";
-  if (flow.semantic?.tool_names?.length) return flow.semantic.tool_names.join(", ");
+  // For Model API calls, prioritize model name over tool list
+  if (isModelApiPath(flow.path) && flow.semantic?.model) {
+    return flow.semantic.model;
+  }
   if (flow.semantic?.skill_names?.length) return `Skill: ${flow.semantic.skill_names.join(", ")}`;
+  if (flow.semantic?.tool_names?.length) return flow.semantic.tool_names.join(", ");
   if (flow.semantic?.rpc_method) return flow.semantic.rpc_method;
   if (flow.semantic?.model) return flow.semantic.model;
   return `${flow.method || "-"} ${flow.status || "pending"} ${category}`;
@@ -481,7 +570,7 @@ export function computeAnalytics(flows) {
   };
 }
 
-export function usageTotal(usage = {}) {
+export function usageTotal(usage: AnyRecord = {}) {
   const explicit = Number(usage.total_tokens || 0);
   if (explicit > 0) return explicit;
   return Number(usage.input_tokens || 0)
@@ -490,12 +579,12 @@ export function usageTotal(usage = {}) {
     + Number(usage.reasoning_output_tokens || 0);
 }
 
-export function formatTokenShort(usage = {}) {
+export function formatTokenShort(usage: AnyRecord = {}) {
   const total = usageTotal(usage);
   return total > 0 ? `${total} tok` : "";
 }
 
-function addTokenBucket(map, name, total, usage = {}) {
+function addTokenBucket(map, name, total, usage: AnyRecord = {}) {
   const current = map.get(name) || {
     name,
     total: 0,
@@ -526,8 +615,11 @@ export function isNoiseFlow(flow) {
   const category = flow?.semantic?.category;
   const method = flow?.method;
   const path = flow?.path || flow?.url || "";
-  return method === "CONNECT"
+  return Boolean(flow?.semantic?.low_signal)
+    || method === "CONNECT"
     || category === "Telemetry"
+    || path.includes("/hooks/claude-code")
+    || path.includes("/hooks/codex")
     || path.includes("analytics-events")
     || path.includes("/otlp/")
     || path.includes("/metrics");

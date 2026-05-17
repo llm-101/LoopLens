@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE="${1:-codex}"
+URL="${LOOPLENS_HOOK_URL:-http://127.0.0.1:37917/hooks/${SOURCE}}"
+TIMEOUT="${LOOPLENS_HOOK_TIMEOUT:-2}"
+
+if command -v curl >/dev/null 2>&1; then
+  curl --silent --show-error --max-time "$TIMEOUT" \
+    -H "Content-Type: application/json" \
+    --data-binary @- \
+    "$URL" >/dev/null || true
+fi
+
+exit 0

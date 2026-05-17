@@ -4,8 +4,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 mkdir -p "$ROOT/ca"
 
-CERT="$ROOT/ca/cc-capture-ca.pem"
-KEY="$ROOT/ca/cc-capture-ca.key"
+CERT="$ROOT/ca/looplens-ca.pem"
+KEY="$ROOT/ca/looplens-ca.key"
 
 if [[ -f "$CERT" && -f "$KEY" ]]; then
   echo "CA already exists:"
@@ -18,7 +18,7 @@ openssl req -x509 -newkey rsa:2048 -nodes \
   -keyout "$KEY" \
   -out "$CERT" \
   -days 3650 \
-  -subj "/CN=cc-capture-native local CA" \
+  -subj "/CN=LoopLens local CA" \
   -addext "basicConstraints=critical,CA:true" \
   -addext "keyUsage=critical,keyCertSign,cRLSign"
 

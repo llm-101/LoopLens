@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Build native proxy
-        run: cargo build --release
+        run: cargo build -p looplens-proxy --release
 
       - name: Build Vite frontend
         working-directory: desktop
@@ -35,4 +35,3 @@ jobs:
       - name: Check Tauri shell
         working-directory: desktop/src-tauri
         run: cargo check
-

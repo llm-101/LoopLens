@@ -1,0 +1,22 @@
+[package]
+name = "looplens-proxy"
+version.workspace = true
+edition.workspace = true
+description = "Native local capture proxy and API gateway for LoopLens"
+license = "Apache-2.0"
+
+[dependencies]
+anyhow.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+clap.workspace = true
+http-body-util.workspace = true
+hudsucker.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tiny_http.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

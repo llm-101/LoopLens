@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-CERT="${CCC_CA_CERT:-$ROOT/ca/cc-capture-ca.pem}"
+CERT="${CCC_CA_CERT:-$ROOT/ca/looplens-ca.pem}"
 KEYCHAIN="${CCC_KEYCHAIN:-$HOME/Library/Keychains/login.keychain-db}"
 
 if [[ ! -f "$CERT" ]]; then

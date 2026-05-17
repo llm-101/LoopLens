@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "identifier": "com.looplens.desktop",
   "build": {
-    "beforeDevCommand": "npm run dev:vite",
-    "beforeBuildCommand": "npm run build:vite",
+    "beforeDevCommand": "npm run build:native && npm run dev:vite",
+    "beforeBuildCommand": "npm run build:native && npm run build:vite",
     "devUrl": "http://127.0.0.1:1420",
     "frontendDist": "../dist"
   },
@@ -13,10 +13,17 @@
     "windows": [
       {
         "title": "LoopLens",
-        "width": 1240,
-        "height": 780,
-        "minWidth": 980,
-        "minHeight": 620
+        "width": 1440,
+        "height": 900,
+        "minWidth": 1180,
+        "minHeight": 720,
+        "transparent": true,
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "trafficLightPosition": {
+          "x": 16,
+          "y": 18
+        }
       }
     ]
   },

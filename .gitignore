@@ -2,6 +2,10 @@
 target/
 desktop/dist/
 desktop/src-tauri/target/
+release/
+*.dmg
+*.zip
+*.app
 
 # Dependencies and caches
 desktop/node_modules/
@@ -11,6 +15,9 @@ desktop/node_modules/
 # Local capture data and generated CA material
 captures/
 ca/
+hooks/
+.claude/
+.codex/
 *.jsonl
 *.pem
 *.key
@@ -29,4 +36,3 @@ desktop-proxy.log
 .vscode/
 *.swp
 *.swo
-
