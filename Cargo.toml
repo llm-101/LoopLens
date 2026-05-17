@@ -13,7 +13,7 @@ bytes = "1.7"
 chrono = { version = "0.4", features = ["serde"] }
 clap = { version = "4.5", features = ["derive", "env"] }
 http-body-util = "0.1"
-hudsucker = { version = "0.24", features = ["full"] }
+hudsucker = { version = "0.24", default-features = false, features = ["decoder", "http2", "rcgen-ca", "rustls-client"] }
 regex = "1.10"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 serde = { version = "1.0", features = ["derive"] }
