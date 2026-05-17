@@ -57,3 +57,40 @@ jobs:
           prerelease: false
           assetNamePattern: "LoopLens_[version]_${{ matrix.arch }}[ext]"
           args: --target ${{ matrix.target }}
+
+  windows:
+    name: Windows x64
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install desktop dependencies
+        working-directory: desktop
+        run: npm ci
+
+      - name: Build and publish Tauri bundle
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: desktop
+          tagName: v__VERSION__
+          releaseName: LoopLens v__VERSION__
+          releaseBody: |
+            Download the macOS DMG or Windows installer below.
+
+            These builds are unsigned and not notarized yet, so your OS may require manual approval on first launch.
+          releaseDraft: true
+          prerelease: false
+          assetNamePattern: "LoopLens_[version]_windows_x64[ext]"

@@ -198,11 +198,11 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The release workflow builds macOS arm64 and x64 bundles from `desktop/`, uploads `.dmg` and `.app` assets, and creates a draft GitHub Release named from the app version in `desktop/src-tauri/tauri.conf.json`.
+The release workflow builds macOS arm64/x64 `.dmg` bundles and a Windows x64 `.exe` installer from `desktop/`, uploads the assets, and creates a draft GitHub Release named from the app version in `desktop/src-tauri/tauri.conf.json`.
 
 You can also run it manually from **Actions → Release → Run workflow**.
 
-Current release builds are unsigned and not notarized. macOS may require manual approval on first launch.
+Current release builds are unsigned and not notarized. macOS and Windows may require manual approval on first launch.
 
 ## Security And Privacy
 
