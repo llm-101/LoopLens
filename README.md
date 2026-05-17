@@ -6,8 +6,11 @@ LoopLens combines a native Rust HTTP/HTTPS capture proxy with a Tauri desktop wo
 
 > LoopLens is for local debugging of traffic you explicitly route through it. Capture files may contain sensitive prompts, paths, responses, and metadata.
 
+![LoopLens Inspect workbench](docs/assets/looplens-inspect-workbench.png)
+
 ## Highlights
 
+- Activity-first desktop workflow with Inspect, Network, and Settings workspaces.
 - AI Loop Workbench for turn-by-turn agent execution.
 - Tool, MCP, skill, token, and network correlation.
 - Native launchers for Claude Code and Codex through a fresh capture.
@@ -63,6 +66,16 @@ open "src-tauri/target/release/bundle/macos/LoopLens.app"
 ```
 
 Inside the app, use **Open Claude Code** or **Open Codex** to start a fresh capture and launch the selected CLI through the local proxy.
+
+### First launch checklist
+
+When you open the packaged app for the first time:
+
+1. The **Activity** tab shows a short setup checklist at the top: keep the HTTPS proxy running, trust the LoopLens CA (required for HTTPS), then generate capture traffic (for example **Open Claude Code** / **Open Codex**).
+2. If TLS still fails or flows stay empty, use **Settings → Trust** and confirm the proxy listen address matches your CLI.
+3. Optional: enable **Hooks** under Settings for structured Claude/Codex events.
+
+You can dismiss the checklist anytime. To bring it back during development, clear `looplens.firstRunGuide.dismissed` in the webview’s localStorage.
 
 ## Run The Proxy Directly
 
