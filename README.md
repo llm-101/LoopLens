@@ -1,8 +1,10 @@
 # LoopLens
 
-Visual debugger for AI agent loops, tools, MCP, skills, tokens, and network traffic.
+Visual debugger for Claude Code and Codex runs.
 
-LoopLens combines a native Rust HTTP/HTTPS capture proxy with a Tauri desktop workbench for inspecting your own Claude Code and Codex CLI sessions. It is designed for agent observability: prompts, model steps, tool calls, MCP traffic, skill use, token pressure, compact events, and correlated network flows.
+LoopLens is a local desktop workbench for understanding what happened inside a Claude Code or Codex CLI run. It opens each tool through a fresh capture, records structured hook events where available, reads Claude session sidecars, captures proxied network traffic, and turns the result into a loop timeline you can inspect.
+
+It is not a generic packet viewer. The product is focused on Claude Code and Codex debugging: user prompts, model turns, tool calls, MCP traffic, skill usage, token pressure, compact events, hook lifecycle events, and the network evidence behind a run.
 
 > LoopLens is for local debugging of traffic you explicitly route through it. Capture files may contain sensitive prompts, paths, responses, and metadata.
 
@@ -12,28 +14,46 @@ LoopLens combines a native Rust HTTP/HTTPS capture proxy with a Tauri desktop wo
 
 ## Highlights
 
-- Activity-first desktop workflow with Inspect, Network, and Settings workspaces.
-- AI Loop Workbench for turn-by-turn agent execution.
-- Tool, MCP, skill, token, and network correlation.
-- Native launchers for Claude Code and Codex through a fresh capture.
-- Dense Network Inspector with request, response, raw, chunk, and token views.
-- Local CA workflow for native HTTPS proxying.
-- Conservative redaction for common secret-bearing headers and JSON fields.
+- One-click **Open Claude Code** and **Open Codex** launchers, each creating a fresh source-specific run file.
+- Claude Code loop reconstruction from session sidecars plus official HTTP hook events.
+- Codex run capture through the local proxy and command-hook bridge.
+- Turn-by-turn Inspect view for prompts, model steps, tool calls, MCP calls, skills, final results, token usage, and warnings.
+- Network Inspector for the requests, responses, streaming chunks, headers, raw payloads, and token evidence produced during the run.
+- Local CA workflow for Claude Code / Codex HTTPS proxying.
+- Conservative redaction for common secret-bearing headers and JSON fields before capture display.
+
+## What LoopLens Shows
+
+For **Claude Code**, LoopLens can combine:
+
+- `.claude` session JSONL sidecars
+- official Claude Code HTTP hook events
+- proxied model/tool/MCP network traffic
+- token usage and compact-related metadata when present
+
+For **Codex**, LoopLens can combine:
+
+- a fresh `capture-codex-*.jsonl` run file
+- command-hook events routed through `bin/looplens-hook`
+- proxied OpenAI/API traffic and streaming chunks
+- token and network evidence extracted from captured payloads
 
 ## Architecture
 
 ```text
 Claude Code / Codex CLI
         |
-        | HTTPS proxy
+        | fresh launch wrapper + HTTPS proxy + hooks
         v
-looplens-proxy  ->  captures/*.jsonl
+looplens-proxy  ->  captures/capture-claude-code-*.jsonl
+                 ->  captures/capture-codex-*.jsonl
+                 ->  hooks/hook-events.jsonl
         |
         v
 LoopLens Desktop  ->  AI Loop / Network / Timeline / Tokens / Raw
 ```
 
-The native proxy writes JSONL capture files. The desktop app reads those captures, reads Claude session sidecars when available, and builds a unified agent-loop model in the UI.
+The native proxy writes JSONL capture files. The desktop app reads those captures, reads Claude session sidecars when available, reads LoopLens hook events, and builds a unified Claude Code / Codex run model in the UI.
 
 ## Repository Layout
 
@@ -61,7 +81,7 @@ See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for a contributor-foc
 - macOS for the desktop app and CA trust helper scripts.
 - Rust stable toolchain.
 - Node.js 22 or newer.
-- Claude Code and/or Codex CLI installed if you want to launch them from LoopLens.
+- Claude Code and/or Codex CLI installed.
 
 ## Quick Start
 
@@ -88,7 +108,7 @@ npm run build
 open "src-tauri/target/release/bundle/macos/LoopLens.app"
 ```
 
-Inside the app, use **Open Claude Code** or **Open Codex** to start a fresh capture and launch the selected CLI through the local proxy.
+Inside the app, use **Open Claude Code** or **Open Codex**. LoopLens creates a new run, starts the proxy if needed, launches the selected CLI through the local wrapper, and follows the latest loop automatically.
 
 ### First launch checklist
 
@@ -106,7 +126,7 @@ You can dismiss the checklist anytime. To bring it back during development, clea
 ./target/release/looplens-proxy run
 ```
 
-Capture files are written to `captures/capture-*.jsonl`.
+Capture files are written to source-specific files such as `captures/capture-claude-code-*.jsonl`, `captures/capture-codex-*.jsonl`, and `captures/capture-gateway-*.jsonl`.
 
 Useful environment variables:
 
@@ -121,19 +141,19 @@ CCC_CAPTURE_ALL=true
 
 ## CLI Wrappers
 
-Run Claude Code through the proxy:
+Run Claude Code through the LoopLens proxy:
 
 ```bash
 ./bin/run-claude
 ```
 
-Run Codex through the proxy:
+Run Codex through the LoopLens proxy:
 
 ```bash
 ./bin/run-codex
 ```
 
-The desktop app uses these wrappers when opening native tools.
+The desktop app uses these wrappers when you click **Open Claude Code** or **Open Codex**.
 
 ## Inspect Captures From CLI
 
@@ -186,7 +206,7 @@ Current release builds are unsigned and not notarized. macOS may require manual 
 
 ## Security And Privacy
 
-LoopLens captures local traffic that you route through it. Even with redaction, JSONL captures can contain sensitive material.
+LoopLens captures local Claude Code / Codex traffic that you route through it. Even with redaction, JSONL captures can contain sensitive prompts, tool inputs, file paths, model responses, headers, and metadata.
 
 Never commit or publish:
 
@@ -210,8 +230,8 @@ See [SECURITY.md](SECURITY.md) for more detail.
 
 ## Roadmap
 
-- Richer Claude Code loop reconstruction from session sidecars.
-- Better Codex session correlation.
+- More faithful Claude Code transcript reconstruction from `parentUuid` chains.
+- Better Codex hook/session correlation.
 - HAR/export workflows.
 - Signed and notarized macOS releases.
 - Provider-specific token/cost attribution.
