@@ -3796,6 +3796,14 @@ fn display_path(path: &Path) -> String {
 }
 
 fn proxy_binary(root: &Path) -> PathBuf {
+    #[cfg(target_os = "windows")]
+    let candidates = [
+        root.join("target/release/looplens-proxy.exe"),
+        root.join("target/debug/looplens-proxy.exe"),
+        root.join("target/release/cc-capture-native.exe"),
+        root.join("target/debug/cc-capture-native.exe"),
+    ];
+    #[cfg(not(target_os = "windows"))]
     let candidates = [
         root.join("target/release/looplens-proxy"),
         root.join("target/debug/looplens-proxy"),
@@ -3806,7 +3814,13 @@ fn proxy_binary(root: &Path) -> PathBuf {
         .iter()
         .find(|path| path.exists())
         .cloned()
-        .unwrap_or_else(|| root.join("target/release/looplens-proxy"))
+        .unwrap_or_else(|| {
+            root.join(if cfg!(target_os = "windows") {
+                "target/release/looplens-proxy.exe"
+            } else {
+                "target/release/looplens-proxy"
+            })
+        })
 }
 
 fn gateway_settings_path() -> Result<PathBuf, String> {
