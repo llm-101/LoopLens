@@ -22,7 +22,7 @@ Download the latest packaged app from [GitHub Releases](https://github.com/llm-1
 
 The GitHub-generated **Source code (zip)** and **Source code (tar.gz)** files are not app installers.
 
-Current builds are unsigned and not notarized yet. macOS or Windows may show a security warning on first launch; approve the app only if you downloaded it from the LoopLens release page.
+Current macOS builds use ad-hoc signing and are not notarized yet. macOS or Windows may show a security warning on first launch; approve the app only if you downloaded it from the LoopLens release page.
 
 If macOS says **"LoopLens is damaged and can't be opened"**, copy the app to Applications and remove the quarantine flag:
 
@@ -31,7 +31,7 @@ xattr -dr com.apple.quarantine /Applications/LoopLens.app
 open /Applications/LoopLens.app
 ```
 
-This workaround is only needed for the current unsigned preview builds. Future signed and notarized releases should open normally.
+This workaround is only needed for the current non-notarized preview builds. Future Developer ID signed and notarized releases should open normally.
 
 ## Highlights
 
@@ -223,7 +223,7 @@ The release workflow builds macOS arm64/x64 `.dmg` bundles and a Windows x64 `.e
 
 You can also run it manually from **Actions → Release → Run workflow**.
 
-Current release builds are unsigned and not notarized. macOS and Windows may require manual approval on first launch.
+Current macOS release builds use ad-hoc signing and are not notarized. macOS and Windows may require manual approval on first launch.
 
 ## Security And Privacy
 
