@@ -8,6 +8,8 @@ LoopLens combines a native Rust HTTP/HTTPS capture proxy with a Tauri desktop wo
 
 ![LoopLens Inspect workbench](docs/assets/looplens-inspect-workbench.png)
 
+[Watch the desktop demo](docs/assets/looplens-demo.mp4)
+
 ## Highlights
 
 - Activity-first desktop workflow with Inspect, Network, and Settings workspaces.
