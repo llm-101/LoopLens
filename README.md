@@ -12,6 +12,18 @@ It is not a generic packet viewer. The product is focused on Claude Code and Cod
 
 [Watch the desktop demo](docs/assets/looplens-demo.mp4)
 
+## How To Install
+
+Download the latest packaged app from [GitHub Releases](https://github.com/llm-101/LoopLens/releases/latest):
+
+- **macOS Apple Silicon**: download `LoopLens_0.1.0_arm64.dmg`
+- **macOS Intel**: download `LoopLens_0.1.0_x64.dmg`
+- **Windows x64**: download `LoopLens_0.1.0_windows_x64.exe`
+
+The GitHub-generated **Source code (zip)** and **Source code (tar.gz)** files are not app installers.
+
+Current builds are unsigned and not notarized yet. macOS or Windows may show a security warning on first launch; approve the app only if you downloaded it from the LoopLens release page.
+
 ## Highlights
 
 - One-click **Open Claude Code** and **Open Codex** launchers, each creating a fresh source-specific run file.
@@ -78,12 +90,12 @@ See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for a contributor-foc
 
 ## Requirements
 
-- macOS for the desktop app and CA trust helper scripts.
-- Rust stable toolchain.
-- Node.js 22 or newer.
 - Claude Code and/or Codex CLI installed.
+- For packaged releases: macOS or Windows.
+- For source builds: Rust stable toolchain and Node.js 22 or newer.
+- macOS is currently required for the included CA trust helper scripts.
 
-## Quick Start
+## Build From Source
 
 Build the native proxy:
 
