@@ -227,8 +227,8 @@ npm run build
 GitHub Actions builds release packages when you push a version tag:
 
 ```bash
-git tag v0.1.1
-git push origin v0.1.1
+git tag v0.1.2
+git push origin v0.1.2
 ```
 
 The release workflow builds macOS arm64/x64 `.dmg` bundles and a Windows x64 `.exe` installer from `desktop/`, uploads the assets, and creates a draft GitHub Release named from the app version in `desktop/src-tauri/tauri.conf.json`.

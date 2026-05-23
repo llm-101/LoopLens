@@ -227,8 +227,8 @@ npm run build
 推送版本 tag 时，GitHub Actions 会构建 release 包：
 
 ```bash
-git tag v0.1.1
-git push origin v0.1.1
+git tag v0.1.2
+git push origin v0.1.2
 ```
 
 Release workflow 会从 `desktop/` 构建 macOS arm64/x64 `.dmg` 包和 Windows x64 `.exe` 安装器，上传 assets，并根据 `desktop/src-tauri/tauri.conf.json` 中的 app version 创建 draft GitHub Release。
