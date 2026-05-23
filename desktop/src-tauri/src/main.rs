@@ -497,7 +497,12 @@ fn start_proxy(
     }
     let mut remove_existing_proxy = false;
     if let Some(run) = proxies.get_mut(&proxy_listen) {
-        if run.child.try_wait().map_err(|err| err.to_string())?.is_none() {
+        if run
+            .child
+            .try_wait()
+            .map_err(|err| err.to_string())?
+            .is_none()
+        {
             if force_new_capture {
                 let _ = run.child.kill();
                 let _ = run.child.wait();
@@ -530,7 +535,8 @@ fn start_proxy(
 
     if port_is_open(&proxy_listen) {
         if force_new_capture && !is_tool_launch {
-            if recycle_orphan_proxy_on_port(&proxy_listen, &binary)? && !port_is_open(&proxy_listen) {
+            if recycle_orphan_proxy_on_port(&proxy_listen, &binary)? && !port_is_open(&proxy_listen)
+            {
                 // Continue below and spawn a fresh proxy, which creates a new capture file.
             } else {
                 return Err(format!(
@@ -672,7 +678,12 @@ fn allocate_ephemeral_listen(requested: &str) -> Result<String, String> {
 fn prune_proxy_runs(proxies: &mut HashMap<String, ProxyRun>) -> Result<(), String> {
     let mut finished = Vec::new();
     for (listen, run) in proxies.iter_mut() {
-        if run.child.try_wait().map_err(|err| err.to_string())?.is_some() {
+        if run
+            .child
+            .try_wait()
+            .map_err(|err| err.to_string())?
+            .is_some()
+        {
             finished.push(listen.clone());
         }
     }
@@ -849,14 +860,29 @@ fn start_gateway(
         .env("LL_GATEWAY_OUTPUT_DIR", &captures_dir)
         .env("LL_GATEWAY_OUTPUT_FILE", &capture_path)
         .env("LL_GATEWAY_BODY_LIMIT", "20000")
-        .env("LL_GATEWAY_OPENAI_BASE_URL", &gateway_settings.openai_base_url)
-        .env("LL_GATEWAY_ANTHROPIC_BASE_URL", &gateway_settings.anthropic_base_url)
-        .env("LL_GATEWAY_OPENAI_API_KEY", gateway_settings.openai_api_key.clone().unwrap_or_default())
+        .env(
+            "LL_GATEWAY_OPENAI_BASE_URL",
+            &gateway_settings.openai_base_url,
+        )
+        .env(
+            "LL_GATEWAY_ANTHROPIC_BASE_URL",
+            &gateway_settings.anthropic_base_url,
+        )
+        .env(
+            "LL_GATEWAY_OPENAI_API_KEY",
+            gateway_settings.openai_api_key.clone().unwrap_or_default(),
+        )
         .env(
             "LL_GATEWAY_ANTHROPIC_API_KEY",
-            gateway_settings.anthropic_api_key.clone().unwrap_or_default(),
+            gateway_settings
+                .anthropic_api_key
+                .clone()
+                .unwrap_or_default(),
         )
-        .env("LL_GATEWAY_MAX_RETRIES", gateway_settings.max_retries.to_string())
+        .env(
+            "LL_GATEWAY_MAX_RETRIES",
+            gateway_settings.max_retries.to_string(),
+        )
         .env(
             "LL_GATEWAY_REDACT",
             if gateway_settings.redaction_enabled {
@@ -942,7 +968,9 @@ fn test_gateway_provider(
         ok,
         base_url,
         message: if ok {
-            format!("{label} key is configured. LoopLens will verify it on the first gateway request.")
+            format!(
+                "{label} key is configured. LoopLens will verify it on the first gateway request."
+            )
         } else {
             format!("{label} key is missing. Add a key or send pass-through credentials.")
         },
@@ -1000,7 +1028,11 @@ fn capture_files(dir: &Path) -> Result<Vec<CaptureFile>, String> {
                 .map(|duration| duration.as_secs()),
         });
     }
-    files.sort_by(|a, b| b.modified.cmp(&a.modified).then_with(|| b.name.cmp(&a.name)));
+    files.sort_by(|a, b| {
+        b.modified
+            .cmp(&a.modified)
+            .then_with(|| b.name.cmp(&a.name))
+    });
     Ok(files)
 }
 
@@ -1197,7 +1229,8 @@ fn validate_capture_file(path: &Path, name: &str) -> Result<CaptureHealth, Strin
         .filter_map(|item| item.flow_id.clone())
         .collect::<Vec<_>>();
     let has_error = invalid_lines > 0 || !duplicate_flow_ids.is_empty() || orphan_chunks > 0;
-    let has_warning = pending_flows > 0 || error_flows > 0 || connect_flows > 0 || low_signal_flows > 0;
+    let has_warning =
+        pending_flows > 0 || error_flows > 0 || connect_flows > 0 || low_signal_flows > 0;
     let status = if has_error {
         "broken"
     } else if has_warning {
@@ -1325,7 +1358,10 @@ fn read_hook_events(
 }
 
 #[tauri::command]
-fn install_hooks(state: State<'_, AppState>, target: String) -> Result<Vec<HookInstallState>, String> {
+fn install_hooks(
+    state: State<'_, AppState>,
+    target: String,
+) -> Result<Vec<HookInstallState>, String> {
     ensure_codex_hook_bridge(&state.root)?;
     let mut results = Vec::new();
     for target in expand_hook_targets(&target)? {
@@ -1340,7 +1376,10 @@ fn install_hooks(state: State<'_, AppState>, target: String) -> Result<Vec<HookI
 }
 
 #[tauri::command]
-fn remove_hooks(state: State<'_, AppState>, target: String) -> Result<Vec<HookInstallState>, String> {
+fn remove_hooks(
+    state: State<'_, AppState>,
+    target: String,
+) -> Result<Vec<HookInstallState>, String> {
     let mut results = Vec::new();
     for target in expand_hook_targets(&target)? {
         let result = match target {
@@ -1959,7 +1998,11 @@ fn parse_semantics(group: &FlowGroup, host: &str, path: &str, method: &str) -> S
         .or_else(|| group.request.as_ref().and_then(client_from_headers));
     let model = request_json
         .and_then(|json| find_string_key(json, "model"))
-        .or_else(|| gateway.as_ref().and_then(|meta| string_field(meta, "model")));
+        .or_else(|| {
+            gateway
+                .as_ref()
+                .and_then(|meta| string_field(meta, "model"))
+        });
     let token_usage = token_usage_from_group(group);
     let event_type = request_json
         .and_then(|json| json["events"].as_array())
@@ -2028,7 +2071,11 @@ fn gateway_meta_from_group(group: &FlowGroup) -> Option<Value> {
     group
         .request
         .as_ref()
-        .and_then(|record| record["body"]["gateway"].as_object().map(|_| record["body"]["gateway"].clone()))
+        .and_then(|record| {
+            record["body"]["gateway"]
+                .as_object()
+                .map(|_| record["body"]["gateway"].clone())
+        })
         .or_else(|| {
             group.response_start.as_ref().and_then(|record| {
                 record["body"]["gateway"]
@@ -2235,7 +2282,10 @@ fn is_low_signal_flow(
     if category == "Telemetry" {
         return true;
     }
-    if (host == "127.0.0.1" || host == "localhost" || host.starts_with("127.0.0.1:") || host.starts_with("localhost:"))
+    if (host == "127.0.0.1"
+        || host == "localhost"
+        || host.starts_with("127.0.0.1:")
+        || host.starts_with("localhost:"))
         && path.contains("/hooks/")
     {
         return true;
@@ -2645,13 +2695,21 @@ fn handle_hook_http_stream(
             }
         }
         if buffer.len() > 20 * 1024 * 1024 {
-            write_http_json(&mut stream, 413, &json!({ "ok": false, "error": "payload too large" }))?;
+            write_http_json(
+                &mut stream,
+                413,
+                &json!({ "ok": false, "error": "payload too large" }),
+            )?;
             return Ok(());
         }
     }
 
     let Some(end) = header_end else {
-        write_http_json(&mut stream, 400, &json!({ "ok": false, "error": "missing headers" }))?;
+        write_http_json(
+            &mut stream,
+            400,
+            &json!({ "ok": false, "error": "missing headers" }),
+        )?;
         return Ok(());
     };
     let headers = String::from_utf8_lossy(&buffer[..end]);
@@ -2659,7 +2717,11 @@ fn handle_hook_http_stream(
     let request_line = lines.next().unwrap_or_default();
     let parts = request_line.split_whitespace().collect::<Vec<_>>();
     if parts.len() < 2 {
-        write_http_json(&mut stream, 400, &json!({ "ok": false, "error": "bad request" }))?;
+        write_http_json(
+            &mut stream,
+            400,
+            &json!({ "ok": false, "error": "bad request" }),
+        )?;
         return Ok(());
     }
 
@@ -2671,7 +2733,11 @@ fn handle_hook_http_stream(
     }
 
     if method != "POST" || !path.starts_with("/hooks/") {
-        write_http_json(&mut stream, 404, &json!({ "ok": false, "error": "not found" }))?;
+        write_http_json(
+            &mut stream,
+            404,
+            &json!({ "ok": false, "error": "not found" }),
+        )?;
         return Ok(());
     }
 
@@ -2683,8 +2749,9 @@ fn handle_hook_http_stream(
     let body_start = end + 4;
     let body_end = body_start.saturating_add(content_length).min(buffer.len());
     let body = &buffer[body_start..body_end];
-    let payload = serde_json::from_slice::<Value>(body)
-        .unwrap_or_else(|_| json!({ "hook_event_name": "InvalidJson", "body": String::from_utf8_lossy(body) }));
+    let payload = serde_json::from_slice::<Value>(body).unwrap_or_else(
+        |_| json!({ "hook_event_name": "InvalidJson", "body": String::from_utf8_lossy(body) }),
+    );
     let record = record_hook_event(root, source, payload, Some(run_contexts))?;
     write_http_json(
         &mut stream,
@@ -2753,13 +2820,23 @@ fn record_hook_event(
         .duration_since(UNIX_EPOCH)
         .map_err(|err| err.to_string())?;
     let received_at = now.as_secs_f64();
-    let run_context = run_contexts.and_then(|contexts| match_hook_run_context(contexts, &source, received_at));
-    let event_name = hook_value_string_any(&raw, &["hook_event_name", "hookEventName", "event_name"])
-        .unwrap_or_else(|| "unknown".to_owned());
-    let session_id = hook_value_string_any(&raw, &["session_id", "sessionId", "thread_id", "threadId"]);
+    let run_context =
+        run_contexts.and_then(|contexts| match_hook_run_context(contexts, &source, received_at));
+    let event_name =
+        hook_value_string_any(&raw, &["hook_event_name", "hookEventName", "event_name"])
+            .unwrap_or_else(|| "unknown".to_owned());
+    let session_id =
+        hook_value_string_any(&raw, &["session_id", "sessionId", "thread_id", "threadId"]);
     let turn_id = hook_value_string_any(&raw, &["turn_id", "turnId"]);
     let transcript_path = hook_value_string_any(&raw, &["transcript_path", "transcriptPath"]);
-    let cwd = hook_value_string_any(&raw, &["cwd", "current_working_directory", "currentWorkingDirectory"]);
+    let cwd = hook_value_string_any(
+        &raw,
+        &[
+            "cwd",
+            "current_working_directory",
+            "currentWorkingDirectory",
+        ],
+    );
     let hook_source = hook_value_string(&raw, &["source"]);
     let model = hook_value_string_any(&raw, &["model"]);
     let permission_mode = hook_value_string_any(&raw, &["permission_mode", "permissionMode"]);
@@ -2768,9 +2845,26 @@ fn record_hook_event(
     let tool_name = hook_value_string_any(&raw, &["tool_name", "toolName", "tool"]);
     let tool_use_id = hook_value_string_any(
         &raw,
-        &["tool_use_id", "toolUseId", "tool_call_id", "toolCallId", "call_id", "callId"],
+        &[
+            "tool_use_id",
+            "toolUseId",
+            "tool_call_id",
+            "toolCallId",
+            "call_id",
+            "callId",
+        ],
     );
-    let tool_input = hook_value_any(&raw, &["tool_input", "toolInput", "tool_args", "toolArgs", "arguments", "input"]);
+    let tool_input = hook_value_any(
+        &raw,
+        &[
+            "tool_input",
+            "toolInput",
+            "tool_args",
+            "toolArgs",
+            "arguments",
+            "input",
+        ],
+    );
     let tool_response = hook_value_any(
         &raw,
         &[
@@ -2783,13 +2877,23 @@ fn record_hook_event(
             "output",
         ],
     );
-    let permission_suggestions = hook_value_any(&raw, &["permission_suggestions", "permissionSuggestions"]);
+    let permission_suggestions =
+        hook_value_any(&raw, &["permission_suggestions", "permissionSuggestions"]);
     let prompt = hook_value_string_any(&raw, &["prompt", "user_prompt", "userPrompt"]);
     let message = hook_value_string_any(&raw, &["message"]);
     let last_assistant_message =
         hook_value_string_any(&raw, &["last_assistant_message", "lastAssistantMessage"]);
     let title = hook_value_string_any(&raw, &["title"]);
-    let error = hook_value_string_any(&raw, &["error", "error_message", "errorMessage", "error_details", "errorDetails"]);
+    let error = hook_value_string_any(
+        &raw,
+        &[
+            "error",
+            "error_message",
+            "errorMessage",
+            "error_details",
+            "errorDetails",
+        ],
+    );
     let reason = hook_value_string_any(
         &raw,
         &[
@@ -2813,11 +2917,20 @@ fn record_hook_event(
         ],
     );
     let trigger = hook_value_string_any(&raw, &["trigger"]);
-    let custom_instructions = hook_value_string_any(&raw, &["custom_instructions", "customInstructions"]);
+    let custom_instructions =
+        hook_value_string_any(&raw, &["custom_instructions", "customInstructions"]);
     let compact_summary = hook_value_string_any(&raw, &["compact_summary", "compactSummary"]);
     let action = hook_value_string_any(&raw, &["action"]);
     let notification_type = hook_value_string_any(&raw, &["notification_type", "notificationType"]);
-    let mcp_server_name = hook_value_string_any(&raw, &["mcp_server_name", "mcpServerName", "server_name", "serverName"]);
+    let mcp_server_name = hook_value_string_any(
+        &raw,
+        &[
+            "mcp_server_name",
+            "mcpServerName",
+            "server_name",
+            "serverName",
+        ],
+    );
     let elicitation_id = hook_value_string_any(&raw, &["elicitation_id", "elicitationId"]);
     let file_path = hook_value_string_any(&raw, &["file_path", "filePath"]);
     let file_event = hook_value_string_any(&raw, &["event", "file_event", "fileEvent"]);
@@ -2894,7 +3007,9 @@ fn record_hook_event(
         source,
         event_name,
         received_at,
-        capture_file: run_context.as_ref().map(|context| context.capture_file.clone()),
+        capture_file: run_context
+            .as_ref()
+            .map(|context| context.capture_file.clone()),
         run_source: run_context.as_ref().map(|context| context.source.clone()),
         run_listen: run_context.as_ref().map(|context| context.listen.clone()),
         run_started_at: run_context.as_ref().map(|context| context.started_at),
@@ -2974,7 +3089,11 @@ fn match_hook_run_context(
         .cloned()
 }
 
-fn post_or_record_hook_event(root: &Path, target: &str, payload: Value) -> Result<HookEventRecord, String> {
+fn post_or_record_hook_event(
+    root: &Path,
+    target: &str,
+    payload: Value,
+) -> Result<HookEventRecord, String> {
     let source = hook_source_for_target(target);
     let body = serde_json::to_string(&payload).map_err(|err| err.to_string())?;
     if let Ok(mut stream) = TcpStream::connect(HOOK_LISTEN) {
@@ -3034,16 +3153,14 @@ fn read_hook_events_for_root(root: &Path, limit: Option<usize>) -> Result<HookEv
 }
 
 fn hook_value_string(value: &Value, keys: &[&str]) -> Option<String> {
-    keys.iter().find_map(|key| {
-        value.get(*key).and_then(value_to_hook_string)
-    })
+    keys.iter()
+        .find_map(|key| value.get(*key).and_then(value_to_hook_string))
 }
 
 fn hook_value_string_any(value: &Value, keys: &[&str]) -> Option<String> {
     hook_value_string(value, keys).or_else(|| {
-        keys.iter().find_map(|key| {
-            find_value_key(value, key).and_then(value_to_hook_string)
-        })
+        keys.iter()
+            .find_map(|key| find_value_key(value, key).and_then(value_to_hook_string))
     })
 }
 
@@ -3051,8 +3168,11 @@ fn hook_value_any(value: &Value, keys: &[&str]) -> Option<Value> {
     keys.iter()
         .find_map(|key| value.get(*key).filter(|item| !item.is_null()).cloned())
         .or_else(|| {
-            keys.iter()
-                .find_map(|key| find_value_key(value, key).filter(|item| !item.is_null()).cloned())
+            keys.iter().find_map(|key| {
+                find_value_key(value, key)
+                    .filter(|item| !item.is_null())
+                    .cloned()
+            })
         })
 }
 
@@ -3080,9 +3200,12 @@ fn find_value_key<'a>(value: &'a Value, target_key: &str) -> Option<&'a Value> {
             if let Some(found) = map.get(target_key) {
                 return Some(found);
             }
-            map.values().find_map(|item| find_value_key(item, target_key))
+            map.values()
+                .find_map(|item| find_value_key(item, target_key))
         }
-        Value::Array(items) => items.iter().find_map(|item| find_value_key(item, target_key)),
+        Value::Array(items) => items
+            .iter()
+            .find_map(|item| find_value_key(item, target_key)),
         _ => None,
     }
 }
@@ -3160,6 +3283,17 @@ fn codex_config_path(root: &Path) -> PathBuf {
     root.join(".codex/config.toml")
 }
 
+fn codex_hook_bridge_path(root: &Path) -> PathBuf {
+    root.join("bin/looplens-hook")
+}
+
+fn codex_hook_command(root: &Path) -> String {
+    format!(
+        "bash {} codex",
+        shell_quote(&display_path(&codex_hook_bridge_path(root)))
+    )
+}
+
 fn claude_hook_state(root: &Path) -> HookInstallState {
     let path = claude_settings_path(root);
     let installed = fs::read_to_string(&path)
@@ -3179,18 +3313,37 @@ fn claude_hook_state(root: &Path) -> HookInstallState {
 
 fn codex_hook_state(root: &Path) -> HookInstallState {
     let path = codex_config_path(root);
-    let installed = fs::read_to_string(&path)
-        .map(|content| content.contains(LOOPLENS_HOOK_BEGIN))
-        .unwrap_or(false);
+    let expected_command = codex_hook_command(root);
+    let expected_bridge = display_path(&codex_hook_bridge_path(root));
+    let (installed, message) = match fs::read_to_string(&path) {
+        Ok(content) => {
+            let has_looplens_block = content.contains(LOOPLENS_HOOK_BEGIN);
+            let has_current_bridge =
+                content.contains(&expected_command) || content.contains(&expected_bridge);
+            let hooks_enabled = codex_hooks_feature_enabled(&content);
+            if has_looplens_block && has_current_bridge && hooks_enabled {
+                (true, "Codex command hooks installed")
+            } else if has_looplens_block && !has_current_bridge {
+                (
+                    false,
+                    "Codex hooks point to another LoopLens checkout; enable Hooks again",
+                )
+            } else if has_looplens_block && !hooks_enabled {
+                (
+                    false,
+                    "Codex hooks are present but disabled; enable Hooks again",
+                )
+            } else {
+                (false, "Codex hooks not installed")
+            }
+        }
+        Err(_) => (false, "Codex hooks not installed"),
+    };
     HookInstallState {
         target: "codex".to_owned(),
         installed,
         path: display_path(&path),
-        message: if installed {
-            "Codex command hooks installed".to_owned()
-        } else {
-            "Codex hooks not installed".to_owned()
-        },
+        message: message.to_owned(),
     }
 }
 
@@ -3248,7 +3401,10 @@ fn read_json_object_or_empty(path: &Path) -> Result<Value, String> {
     if value.is_object() {
         Ok(value)
     } else {
-        Err(format!("settings file is not a JSON object: {}", path.display()))
+        Err(format!(
+            "settings file is not a JSON object: {}",
+            path.display()
+        ))
     }
 }
 
@@ -3337,7 +3493,7 @@ fn remove_claude_event_hook(hooks: &mut Map<String, Value>, event: &str, url: &s
 }
 
 fn ensure_codex_hook_bridge(root: &Path) -> Result<(), String> {
-    let path = root.join("bin/looplens-hook");
+    let path = codex_hook_bridge_path(root);
     fs::create_dir_all(path.parent().unwrap_or(root)).map_err(|err| err.to_string())?;
     let content = format!(
         r#"#!/usr/bin/env bash
@@ -3360,6 +3516,27 @@ exit 0
     fs::write(path, content).map_err(|err| err.to_string())
 }
 
+fn codex_hooks_feature_enabled(content: &str) -> bool {
+    let mut in_features = false;
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if trimmed.starts_with('[') && trimmed.ends_with(']') {
+            in_features = trimmed == "[features]";
+            continue;
+        }
+        if !in_features {
+            continue;
+        }
+        let Some((key, value)) = trimmed.split_once('=') else {
+            continue;
+        };
+        if key.trim() == "hooks" {
+            return value.trim_start().starts_with("true");
+        }
+    }
+    false
+}
+
 fn install_codex_hooks(root: &Path) -> Result<HookInstallState, String> {
     ensure_codex_hook_bridge(root)?;
     let path = codex_config_path(root);
@@ -3379,10 +3556,7 @@ fn install_codex_hooks(root: &Path) -> Result<HookInstallState, String> {
 
 fn ensure_codex_hooks_feature_enabled(content: &str) -> String {
     let lines = content.lines().map(ToOwned::to_owned).collect::<Vec<_>>();
-    let Some(features_start) = lines
-        .iter()
-        .position(|line| line.trim() == "[features]")
-    else {
+    let Some(features_start) = lines.iter().position(|line| line.trim() == "[features]") else {
         let trimmed = content.trim_start_matches('\n');
         if trimmed.trim().is_empty() {
             return "[features]\nhooks = true\n".to_owned();
@@ -3440,7 +3614,7 @@ fn remove_codex_hooks(root: &Path) -> Result<HookInstallState, String> {
 }
 
 fn codex_hooks_toml_block(root: &Path) -> String {
-    let command = format!("bash {} codex", shell_quote(&display_path(&root.join("bin/looplens-hook"))));
+    let command = codex_hook_command(root);
     let command = toml_string(&command);
     let mut lines = vec![LOOPLENS_HOOK_BEGIN.to_owned()];
     for event in CODEX_HOOK_EVENTS {

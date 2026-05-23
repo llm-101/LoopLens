@@ -1638,6 +1638,8 @@ function HookPanel({ native, busy, hookStatus, hookEvents, onInstallHooks, onRem
   const hookBusy = String(busy || "").includes("hooks");
   const eventCount = hookEvents?.total || hookStatus?.total_events || 0;
   const lastEvent = hookStatus?.last_event;
+  const claudeDetail = hookStatus?.claude?.message || (claudeReady ? t("hooks.httpHooks") : t("hooks.notInstalled"));
+  const codexDetail = hookStatus?.codex?.message || (codexReady ? t("hooks.commandHooks") : t("hooks.notInstalled"));
 
   return (
     <div className={`hook-card ${allReady ? "ready" : ""}`}>
@@ -1652,8 +1654,8 @@ function HookPanel({ native, busy, hookStatus, hookEvents, onInstallHooks, onRem
       {!allReady && (
         <div className="hook-status-grid">
           <HookStatusItem label={t("settings.receiver")} ready={receiverReady} detail={hookStatus?.receiver?.listen || "127.0.0.1:37917"} />
-          <HookStatusItem label="Claude" ready={claudeReady} detail={hookStatus?.claude?.installed ? t("hooks.httpHooks") : t("hooks.notInstalled")} />
-          <HookStatusItem label="Codex" ready={codexReady} detail={hookStatus?.codex?.installed ? t("hooks.commandHooks") : t("hooks.notInstalled")} />
+          <HookStatusItem label="Claude" ready={claudeReady} detail={claudeDetail} />
+          <HookStatusItem label="Codex" ready={codexReady} detail={codexDetail} />
         </div>
       )}
 
@@ -1767,6 +1769,8 @@ function SettingsPanel({
   const gatewayBusy = String(busy || "").includes("gateway");
   const claudeReady = Boolean(hookStatus?.claude?.installed);
   const codexReady = Boolean(hookStatus?.codex?.installed);
+  const claudeHookDetail = hookStatus?.claude?.message || (claudeReady ? t("value.installed") : t("value.notInstalled"));
+  const codexHookDetail = hookStatus?.codex?.message || (codexReady ? t("value.installed") : t("value.notInstalled"));
   const caGenerated = Boolean(environment?.ca_cert_exists && environment?.ca_key_exists);
   const gatewayRunning = Boolean(gatewayStatus?.running);
   const openaiEnvSnippet = `OPENAI_BASE_URL=http://${gatewayDraft.listen || "127.0.0.1:37918"}/v1`;
@@ -1930,8 +1934,8 @@ function SettingsPanel({
         <section className="settings-section">
           <h3>{t("settings.hooks")}</h3>
           <SettingReadout label={t("settings.receiver")} value={hookStatus?.receiver?.running ? hookStatus.receiver.listen : t("value.offline")} />
-          <SettingReadout label="Claude Code" value={claudeReady ? t("value.installed") : t("value.notInstalled")} />
-          <SettingReadout label="Codex" value={codexReady ? t("value.installed") : t("value.notInstalled")} />
+          <SettingReadout label="Claude Code" value={claudeHookDetail} />
+          <SettingReadout label="Codex" value={codexHookDetail} />
           <SettingReadout label={t("settings.capturedEvents")} value={String(hookEvents?.total || hookStatus?.total_events || 0)} />
           <div className="settings-button-row">
             <button className="mini" disabled={!native || hookBusy} onClick={() => onInstallHooks("all")}>{t("settings.enable")}</button>

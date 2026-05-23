@@ -65,7 +65,9 @@ const MODEL_PRICING: Record<string, { input: number; output: number; cached?: nu
 
 export function buildAgentLoopModel({ flows = [], claudeSessionDetail = null, hookEvents = [], sourceFilter = "all" }: AnyRecord = {}) {
   const messages = normalizeMessages(claudeSessionDetail?.messages || []);
-  const rawHookSteps = normalizeHookSteps(hookEvents);
+  const realHookEvents = (hookEvents || []).filter((event) => !isSyntheticHookEvent(event));
+  const syntheticHookEventCount = (hookEvents || []).length - realHookEvents.length;
+  const rawHookSteps = normalizeHookSteps(realHookEvents);
   pairHookToolSteps(rawHookSteps);
   const hookSteps = rawHookSteps.filter(isLoopVisibleHookStep);
   const flowSteps = normalizeFlowSteps(flows);
@@ -190,7 +192,7 @@ export function buildAgentLoopModel({ flows = [], claudeSessionDetail = null, ho
       tokens: sumUsage(sortedSteps.map((step) => step.tokens)),
       estimatedCost: computeLoopCost(turns),
     },
-    diagnostics: diagnosticsForLoop(messages, flows, sortedSteps, rawHookSteps),
+    diagnostics: diagnosticsForLoop(messages, flows, sortedSteps, rawHookSteps, syntheticHookEventCount),
   };
 }
 
@@ -362,6 +364,16 @@ function isLoopEventMessage(message) {
 function isLoopVisibleHookStep(step) {
   const eventName = step?.meta?.eventName;
   return eventName !== "SessionStart" && eventName !== "SessionEnd" && eventName !== "Notification";
+}
+
+function isSyntheticHookEvent(event: AnyRecord = {}) {
+  const raw = event.raw || {};
+  const eventName = event.event_name || raw.hook_event_name || raw.hookEventName;
+  return eventName === "LoopLensTest"
+    || event.session_id === "looplens-test"
+    || raw.session_id === "looplens-test"
+    || event.hook_source === "manual-test"
+    || raw.source === "manual-test";
 }
 
 function isInternalHookFlow(flow: AnyRecord = {}) {
@@ -1074,9 +1086,10 @@ function flowTitle(flow) {
   return `${flow.method || "-"} ${semantic.category || flow.provider || "HTTP"}`;
 }
 
-function diagnosticsForLoop(messages, flows, steps, hookSteps = []) {
+function diagnosticsForLoop(messages, flows, steps, hookSteps = [], syntheticHookEventCount = 0) {
   const diagnostics = [];
   if (!messages.length && !hookSteps.length) diagnostics.push("No session or hook events available; AI Loop is inferred from proxy flows only.");
+  if (syntheticHookEventCount && !hookSteps.length) diagnostics.push("Only LoopLens test hook events were found; real hook events are missing.");
   if (hookSteps.length) diagnostics.push(`${hookSteps.length} official hook event${hookSteps.length > 1 ? "s" : ""} captured.`);
   if (!flows.length) diagnostics.push("No proxy flows available; network correlation is empty.");
   const unmatched = steps.filter((step) => step.status === "unmatched").length;
