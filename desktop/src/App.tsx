@@ -244,7 +244,7 @@ const TRANSLATIONS = {
     "hooks.httpHooks": "HTTP hooks",
     "hooks.commandHooks": "command hooks",
     "hooks.notInstalled": "not installed",
-    "toolbar.title": "AI Loop Workbench",
+    "toolbar.title": "Inspect Workbench",
     "toolbar.liveReview": "Live capture review",
     "toolbar.paused": "Capture paused",
     "toolbar.searchPlaceholder": "Search URL, host, provider, method, status",
@@ -360,14 +360,14 @@ const TRANSLATIONS = {
     "setup.stepHooksDetail": "Recommended first: records prompts, tools, permissions, compact, stop, and Codex events without trusting a CA.",
     "setup.stepLaunch": "Open Codex or Claude Code",
     "setup.stepLaunchDetail": "LoopLens creates a fresh source-specific run file and replaces the current run.",
-    "setup.stepPrompt": "Send a prompt, then inspect AI Loop",
+    "setup.stepPrompt": "Send a prompt, then inspect Loop",
     "setup.stepPromptDetail": "Once a prompt or hook event arrives, the run becomes debuggable.",
     "setup.enableHooks": "Enable Hooks",
-    "setup.openAiLoop": "Open AI Loop",
+    "setup.openAiLoop": "Open Loop",
     "setup.advancedTitle": "Advanced network evidence",
     "setup.advancedDetail": "Use Proxy + CA only when you need full HTTPS request/response evidence. Hooks and Gateway are lower-friction ways to start.",
     "setup.privacyTitle": "Local data boundary",
-    "setup.privacyDetail": "Captures, hooks, gateway settings, and masked keys stay on this Mac. Raw JSONL is retained locally until you clear or export it.",
+    "setup.privacyDetail": "Hooks, local capture files, gateway settings, and masked keys stay on this Mac. Clear old runs from Recent Runs or export only when you choose.",
     "setup.methodHooks": "Hooks",
     "setup.methodHooksDetail": "Best for agent loop accuracy.",
     "setup.methodGateway": "Gateway",
@@ -387,6 +387,26 @@ const TRANSLATIONS = {
     "setup.allStepsDoneSummary": "Hooks are ready and this run has captured loop activity.",
     "setup.expandSteps": "Show steps",
     "setup.activityChecklistHint": "First run setup: enable Hooks and start a fresh run from Activity first.",
+    "story.title": "Run Story",
+    "story.waitingTitle": "Waiting for loop evidence",
+    "story.waitingBody": "Open Codex or Claude Code, send a prompt, then LoopLens will turn events into a debuggable run.",
+    "story.cleanTitle": "Run looks coherent",
+    "story.cleanBody": "{turns} turns and {steps} steps are correlated. Use Network only when you need raw evidence.",
+    "story.errorTitle": "Start with the failed step",
+    "story.errorBody": "{count} error step{plural} found. Inspect the highlighted step before reading raw logs.",
+    "story.rateLimitTitle": "Rate limit changed the path",
+    "story.rateLimitBody": "{count} rate-limit event{plural} detected. Check retry and wait behavior.",
+    "story.unmatchedTitle": "Correlation needs review",
+    "story.unmatchedBody": "{count} unmatched step{plural} remain. Open Raw or Network before drawing conclusions.",
+    "story.expensiveTitle": "Token spike found",
+    "story.expensiveBody": "The largest token step used {tokens}. Review input context before optimizing tools.",
+    "story.focus": "Focus step",
+    "story.noAction": "No urgent step",
+    "story.turns": "Turns",
+    "story.steps": "Steps",
+    "story.tokens": "Tokens",
+    "story.evidence": "Evidence",
+    "story.evidenceValue": "{hooks} hooks · {network} flows",
   },
   zh: {
     "app.tagline": "AI Agent 循环的可视化调试器",
@@ -525,7 +545,7 @@ const TRANSLATIONS = {
     "hooks.httpHooks": "HTTP hooks",
     "hooks.commandHooks": "命令 hooks",
     "hooks.notInstalled": "未安装",
-    "toolbar.title": "AI Loop 工作台",
+    "toolbar.title": "Inspect 工作台",
     "toolbar.liveReview": "实时 capture 审查",
     "toolbar.paused": "Capture 已暂停",
     "toolbar.searchPlaceholder": "搜索 URL、host、provider、method、status",
@@ -641,14 +661,14 @@ const TRANSLATIONS = {
     "setup.stepHooksDetail": "推荐第一步：无需信任 CA，就能记录 prompt、工具、权限、compact、stop 和 Codex 事件。",
     "setup.stepLaunch": "打开 Codex 或 Claude Code",
     "setup.stepLaunchDetail": "LoopLens 会创建新的、按来源区分的 run 文件，并替换当前 run。",
-    "setup.stepPrompt": "发送 prompt，然后查看 AI Loop",
+    "setup.stepPrompt": "发送 prompt，然后查看 Loop",
     "setup.stepPromptDetail": "只要 prompt 或 hook event 到达，这次 run 就可以开始调试。",
     "setup.enableHooks": "启用 Hooks",
-    "setup.openAiLoop": "打开 AI Loop",
+    "setup.openAiLoop": "打开 Loop",
     "setup.advancedTitle": "高级网络证据",
     "setup.advancedDetail": "只有需要完整 HTTPS request/response 证据时再使用 Proxy + CA。Hooks 和 Gateway 更适合作为低摩擦起点。",
     "setup.privacyTitle": "本地数据边界",
-    "setup.privacyDetail": "Captures、Hooks、Gateway 设置和脱敏后的 key 都保存在本机。Raw JSONL 会本地保留，直到你清空或导出。",
+    "setup.privacyDetail": "Hooks、本地 capture 文件、Gateway 设置和脱敏后的 key 都保存在这台 Mac。旧 run 可在「最近 Runs」清理，导出只在你主动操作时发生。",
     "setup.methodHooks": "Hooks",
     "setup.methodHooksDetail": "最适合提高 agent loop 准确度。",
     "setup.methodGateway": "Gateway",
@@ -668,6 +688,26 @@ const TRANSLATIONS = {
     "setup.allStepsDoneSummary": "Hooks 已就绪，并且当前 run 已捕获到 loop 活动。",
     "setup.expandSteps": "展开步骤",
     "setup.activityChecklistHint": "首次 Run 设置：请先在「活动」页启用 Hooks 并启动一个新 run。",
+    "story.title": "Run 摘要",
+    "story.waitingTitle": "等待 Loop 证据",
+    "story.waitingBody": "打开 Codex 或 Claude Code，发送一个 prompt 后，LoopLens 会把事件整理成可调试的 run。",
+    "story.cleanTitle": "Run 看起来连贯",
+    "story.cleanBody": "{turns} 轮、{steps} 个步骤已完成关联。只有需要原始证据时再进入 Network。",
+    "story.errorTitle": "先看失败步骤",
+    "story.errorBody": "发现 {count} 个错误步骤。先检查高亮步骤，再读 raw 日志。",
+    "story.rateLimitTitle": "Rate limit 改变了路径",
+    "story.rateLimitBody": "检测到 {count} 个 rate-limit 事件。建议检查 retry 和等待行为。",
+    "story.unmatchedTitle": "关联需要复核",
+    "story.unmatchedBody": "还有 {count} 个未匹配步骤。下结论前先看 Raw 或 Network。",
+    "story.expensiveTitle": "发现 Token 高点",
+    "story.expensiveBody": "最大 token 步骤使用了 {tokens}。优化工具前，先检查输入上下文。",
+    "story.focus": "定位步骤",
+    "story.noAction": "暂无紧急步骤",
+    "story.turns": "轮次",
+    "story.steps": "步骤",
+    "story.tokens": "Token",
+    "story.evidence": "证据",
+    "story.evidenceValue": "{hooks} hooks · {network} flows",
   },
 };
 
@@ -1371,6 +1411,7 @@ export default function App() {
           proxyStatus={proxyStatus}
           sourceFilter={sourceFilter}
           activeView={activeView}
+          inspectTab={activeInspectTab}
           onActiveViewChange={setActiveView}
           categories={categories}
           categoryFilter={categoryFilter}
@@ -1456,6 +1497,7 @@ export default function App() {
             hookStatus={hookStatus}
             busy={busy}
             loopFocus={loopFocus}
+            followLatest={followLatest}
             onOpenTool={openTool}
             onStartProxy={startProxy}
             onStopProxy={stopProxy}
@@ -2105,6 +2147,7 @@ function setupChecklistItems(environment, native, t = (key) => key) {
       action: caGenerated ? null : "gen-ca",
       actionLabel: t("settings.generateCA"),
       busyKey: "gen-ca",
+      optional: true,
     },
     {
       label: t("settings.caTrust"),
@@ -2114,6 +2157,7 @@ function setupChecklistItems(environment, native, t = (key) => key) {
       actionLabel: t("settings.trustCA"),
       busyKey: "trust-ca",
       actionDisabled: !caGenerated,
+      optional: true,
     },
     {
       label: "Codex CLI",
@@ -2276,6 +2320,7 @@ function Toolbar({
   proxyStatus,
   sourceFilter,
   activeView,
+  inspectTab,
   onActiveViewChange,
   categories,
   categoryFilter,
@@ -2289,7 +2334,7 @@ function Toolbar({
 }) {
   const { t } = useI18n();
   const isNetwork = activeView === "Network";
-  const isLoop = activeView === "AI Loop";
+  const isLoop = activeView === "Inspect" && inspectTab === "Loop";
   const isActivity = activeView === "Activity";
   function applyQuickFilter(filter) {
     onCategoryFilterChange(filter.category);
@@ -2832,7 +2877,7 @@ function DetailActions({ detail, onViewInLoop, onSetCompareA, onSetCompareB }) {
     <div className="detail-actions">
       <button onClick={copyCurl}>Copy cURL</button>
       <button onClick={exportJson}>Export JSON</button>
-      <button onClick={onViewInLoop}>View in AI Loop</button>
+      <button onClick={onViewInLoop}>View in Loop</button>
       <button onClick={onSetCompareA}>Set A</button>
       <button onClick={onSetCompareB}>Set B</button>
     </div>
@@ -2868,6 +2913,7 @@ function AnalysisView({
   hookStatus,
   busy,
   loopFocus,
+  followLatest,
   onOpenTool,
   onStartProxy,
   onStopProxy,
@@ -2929,6 +2975,7 @@ function AnalysisView({
             proxyStatus={proxyStatus}
             busy={busy}
             loopFocus={loopFocus}
+            followLatest={followLatest}
             onOpenTool={onOpenTool}
             onRunHelper={onRunHelper}
             onOpenNetworkFlow={onOpenNetworkFlow}
@@ -3489,6 +3536,7 @@ function LoopWorkbench({
   proxyStatus,
   busy,
   loopFocus,
+  followLatest,
   onOpenTool,
   onRunHelper,
   onOpenNetworkFlow,
@@ -3506,10 +3554,13 @@ function LoopWorkbench({
       setActiveStepId(null);
       return;
     }
-    setActiveStepId((current) => loopModel.steps.some((step) => step.id === current)
-      && visibleSteps.some((step) => step.id === current) ? current
-      : preferredLoopStep({ ...loopModel, steps: visibleSteps })?.id || visibleSteps[0].id);
-  }, [loopFocus, loopModel.id]);
+    setActiveStepId((current) => {
+      if (followLatest) return latestLoopStep(visibleSteps)?.id || visibleSteps[0].id;
+      return loopModel.steps.some((step) => step.id === current)
+        && visibleSteps.some((step) => step.id === current) ? current
+        : preferredLoopStep({ ...loopModel, steps: visibleSteps })?.id || visibleSteps[0].id;
+    });
+  }, [followLatest, loopFocus, loopModel.id]);
 
   const activeStep = loopModel.steps.find((step) => step.id === activeStepId) || preferredLoopStep(loopModel) || null;
   const tokenTotal = loopUsageTotal(loopModel.totals.tokens) || usageTotal(claudeSessionDetail?.session?.token_usage) || analytics.tokens.total;
@@ -3531,6 +3582,14 @@ function LoopWorkbench({
         session={claudeSessionDetail?.session}
         storageDir={claudeSessionIndex?.storage_dir}
         onExport={() => downloadText("looplens-ai-loop.json", JSON.stringify(exportPayload, null, 2), "application/json")}
+      />
+
+      <RunStoryCard
+        model={loopModel}
+        analytics={analytics}
+        claudeSessionDetail={claudeSessionDetail}
+        activeStepId={activeStep?.id}
+        onSelectStep={setActiveStepId}
       />
 
       <LoopSignals
@@ -3600,6 +3659,90 @@ function CurrentRunSummary({ model, captureHealth, tokenTotal, issueCount, sessi
       </div>
       <button className="secondary" onClick={onExport}>{t("run.exportLoop")}</button>
     </div>
+  );
+}
+
+function RunStoryCard({ model, analytics, claudeSessionDetail, activeStepId, onSelectStep }) {
+  const { t } = useI18n();
+  const attentionItems = loopAttentionItems(model);
+  const primaryAttention = attentionItems[0] || null;
+  const errors = model.steps.filter((step) => step.status === "error").length;
+  const rateLimits = model.steps.filter((step) => step.type === "Rate Limit").length;
+  const tokenTotal = loopUsageTotal(model.totals.tokens) || usageTotal(claudeSessionDetail?.session?.token_usage) || analytics?.tokens?.total || 0;
+  const tokenSteps = model.steps
+    .map((step) => ({ step, tokens: loopUsageTotal(step.tokens) }))
+    .filter((item) => item.tokens > 0)
+    .sort((a, b) => b.tokens - a.tokens);
+  const largestTokenStep = tokenSteps[0] || null;
+  const hasExpensiveStep = largestTokenStep?.tokens >= 10_000;
+  let tone = "ok";
+  let title = t("story.cleanTitle");
+  let body = t("story.cleanBody", { turns: model.totals.turns, steps: model.totals.steps });
+  let focusStep = primaryAttention?.step || null;
+
+  if (!model.steps.length) {
+    tone = "empty";
+    title = t("story.waitingTitle");
+    body = t("story.waitingBody");
+  } else if (errors > 0) {
+    tone = "bad";
+    title = t("story.errorTitle");
+    body = t("story.errorBody", { count: errors, plural: errors === 1 ? "" : "s" });
+  } else if (rateLimits > 0) {
+    tone = "warn";
+    title = t("story.rateLimitTitle");
+    body = t("story.rateLimitBody", { count: rateLimits, plural: rateLimits === 1 ? "" : "s" });
+  } else if (model.totals.unmatched > 0) {
+    tone = "warn";
+    title = t("story.unmatchedTitle");
+    body = t("story.unmatchedBody", { count: model.totals.unmatched, plural: model.totals.unmatched === 1 ? "" : "s" });
+  } else if (hasExpensiveStep) {
+    tone = "warn";
+    title = t("story.expensiveTitle");
+    body = t("story.expensiveBody", { tokens: formatTokenMetric(largestTokenStep.tokens) });
+    focusStep = largestTokenStep.step;
+  }
+
+  const evidenceValue = t("story.evidenceValue", {
+    hooks: model.totals.hooks || 0,
+    network: model.totals.network || 0,
+  });
+
+  return (
+    <section className={`run-story-card ${tone}`} aria-label={t("story.title")}>
+      <div className="run-story-copy">
+        <span>{t("story.title")}</span>
+        <strong>{title}</strong>
+        <p>{body}</p>
+      </div>
+      <div className="run-story-metrics">
+        <div className="run-story-stat">
+          <span>{t("story.turns")}</span>
+          <strong>{model.totals.turns || 0}</strong>
+        </div>
+        <div className="run-story-stat">
+          <span>{t("story.steps")}</span>
+          <strong>{model.totals.steps || 0}</strong>
+        </div>
+        <div className="run-story-stat">
+          <span>{t("story.tokens")}</span>
+          <strong>{formatTokenMetric(tokenTotal)}</strong>
+        </div>
+        <div className="run-story-stat">
+          <span>{t("story.evidence")}</span>
+          <strong>{evidenceValue}</strong>
+        </div>
+      </div>
+      <button
+        type="button"
+        className="mini"
+        disabled={!focusStep}
+        onClick={() => focusStep && onSelectStep(focusStep.id)}
+        aria-pressed={focusStep?.id === activeStepId}
+      >
+        {focusStep ? t("story.focus") : t("story.noAction")}
+      </button>
+    </section>
   );
 }
 
@@ -4009,6 +4152,10 @@ function preferredLoopStep(model) {
     || null;
 }
 
+function latestLoopStep(steps = []) {
+  return [...steps].sort((a, b) => timeValue(b.timestamp) - timeValue(a.timestamp))[0] || null;
+}
+
 function stepMatchesLoopFocus(step, focus) {
   if (!focus || focus === "All") return true;
   if (focus === "Attention") return Boolean(attentionReason(step));
@@ -4062,7 +4209,7 @@ function LoopRail({
       <section className="loop-rail-panel">
         <div className="empty-state compact">
           <h2>No {focus.toLowerCase()} steps</h2>
-          <p>Switch the AI Loop focus back to All, or continue the run until matching steps appear.</p>
+          <p>Switch the Loop focus back to All, or continue the run until matching steps appear.</p>
         </div>
       </section>
     );
@@ -4108,7 +4255,7 @@ function LoopRail({
 function LoopOnboardingCard({ native, environment, proxyStatus, busy, onRunHelper, onOpenTool }) {
   const { t } = useI18n();
   const setupItems = setupChecklistItems(environment, native, t);
-  const blockers = setupItems.filter((item) => !item.ready);
+  const blockers = setupItems.filter((item) => !item.ready && !item.optional);
   const firstAction = blockers.find((item) => item.action && !item.actionDisabled);
   return (
     <div className="loop-onboarding">

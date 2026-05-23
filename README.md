@@ -1,5 +1,7 @@
 # LoopLens
 
+[中文文档](README_CN.md)
+
 Visual debugger for Claude Code and Codex runs.
 
 LoopLens is a local desktop workbench for understanding what happened inside a Claude Code or Codex CLI run. It opens each tool through a fresh capture, records structured hook events where available, reads Claude session sidecars, captures proxied network traffic, and turns the result into a loop timeline you can inspect.
@@ -81,7 +83,7 @@ looplens-proxy  ->  captures/capture-claude-code-*.jsonl
                  ->  hooks/hook-events.jsonl
         |
         v
-LoopLens Desktop  ->  AI Loop / Network / Timeline / Tokens / Raw
+LoopLens Desktop  ->  Activity / Inspect / Network
 ```
 
 The native proxy writes JSONL capture files. The desktop app reads those captures, reads Claude session sidecars when available, reads LoopLens hook events, and builds a unified Claude Code / Codex run model in the UI.
@@ -145,9 +147,9 @@ Inside the app, use **Open Claude Code** or **Open Codex**. LoopLens creates a n
 
 When you open the packaged app for the first time:
 
-1. The **Activity** tab shows a short setup checklist at the top: keep the HTTPS proxy running, trust the LoopLens CA (required for HTTPS), then generate capture traffic (for example **Open Claude Code** / **Open Codex**).
-2. If TLS still fails or flows stay empty, use **Settings → Trust** and confirm the proxy listen address matches your CLI.
-3. Optional: enable **Hooks** under Settings for structured Claude/Codex events.
+1. The **Activity** tab shows a short setup checklist at the top: enable **Hooks**, then start a fresh run with **Open Claude Code** or **Open Codex**.
+2. Send a prompt in the launched tool, then use **Inspect → Loop** to review the reconstructed run.
+3. Use **Settings → Trust** and the HTTPS proxy only when you need full request/response network evidence.
 
 You can dismiss the checklist anytime. To bring it back during development, clear `looplens.firstRunGuide.dismissed` in the webview’s localStorage.
 
